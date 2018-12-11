@@ -35,7 +35,7 @@ You can obtain the access token like below.
 }
 ~~~
 
-You can also retrieve this result using Google's OAuth2 package. I created this library to study the JWT process.
+[You can also retrieve this result using Google's OAuth2 package.](https://gist.github.com/tanaikech/4b4cb27ece27573b3f4df0e050b52330) I created this library to study the JWT process.
 
 -----
 
