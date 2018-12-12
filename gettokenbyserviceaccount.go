@@ -60,7 +60,7 @@ func fetch(jwt string) ([]byte, error) {
 	res, err := client.Do(req)
 	body, errc := ioutil.ReadAll(res.Body)
 	if err != nil || res.StatusCode-300 >= 0 {
-		return nil, fmt.Errorf("status code is %s. error message is %s", res.StatusCode, body)
+		return nil, fmt.Errorf("status code is %d. error message is %s", res.StatusCode, body)
 	}
 	if errc != nil {
 		return nil, errc
