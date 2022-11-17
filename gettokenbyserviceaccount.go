@@ -87,7 +87,7 @@ func getPrivateKey(privateKey string) (*rsa.PrivateKey, error) {
 }
 
 // createSignature : Create signature.
-func (a *AccessToken) createSignature(clientEmail, scopes string) (string, error) {
+func (a *AccessToken) createSignature(clientEmail, impersonateEmail, scopes string) (string, error) {
 	h := struct {
 		Alg string `json:"alg"`
 		Typ string `json:"typ"`
@@ -97,6 +97,7 @@ func (a *AccessToken) createSignature(clientEmail, scopes string) (string, error
 	}
 	c := struct {
 		Iss   string `json:"iss"`
+		Sub   string `json:"sub"`
 		Scope string `json:"scope"`
 		Aud   string `json:"aud"`
 		Exp   string `json:"exp"`
@@ -108,6 +109,12 @@ func (a *AccessToken) createSignature(clientEmail, scopes string) (string, error
 		Exp:   strconv.FormatInt(a.End, 10),
 		Iat:   strconv.FormatInt(a.Start, 10),
 	}
+
+	// add impersonateEmail to the struct
+	if impersonateEmail != "" {
+		c.Sub = impersonateEmail
+	}
+
 	he, err := json.Marshal(h)
 	if err != nil {
 		return "", err
@@ -121,7 +128,7 @@ func (a *AccessToken) createSignature(clientEmail, scopes string) (string, error
 }
 
 // Do : Retrieve access token from Google Service Account
-func Do(privateKey, clientEmail, scopes string) (*AccessToken, error) {
+func Do(privateKey, clientEmail, impersonateEmail, scopes string) (*AccessToken, error) {
 	if privateKey == "" || clientEmail == "" || scopes == "" {
 		return nil, fmt.Errorf("invalid argument. please confirm the private key, client email and scopes")
 	}
@@ -130,7 +137,7 @@ func Do(privateKey, clientEmail, scopes string) (*AccessToken, error) {
 		Start: nt,
 		End:   nt + 3600,
 	}
-	signature, err := a.createSignature(clientEmail, scopes)
+	signature, err := a.createSignature(clientEmail, impersonateEmail, scopes)
 	if err != nil {
 		return nil, err
 	}
