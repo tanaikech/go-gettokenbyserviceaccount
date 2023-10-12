@@ -13,14 +13,14 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
 )
 
 const (
-	url = "https://www.googleapis.com/oauth2/v3/token"
+	url = "https://www.googleapis.com/oauth2/v4/token"
 )
 
 // AccessToken :
@@ -58,7 +58,7 @@ func fetch(jwt string) ([]byte, error) {
 		Timeout: time.Duration(60) * time.Second,
 	}
 	res, err := client.Do(req)
-	body, errc := ioutil.ReadAll(res.Body)
+	body, errc := io.ReadAll(res.Body)
 	if err != nil || res.StatusCode-300 >= 0 {
 		return nil, fmt.Errorf("status code is %d. error message is %s", res.StatusCode, body)
 	}
@@ -110,7 +110,6 @@ func (a *AccessToken) createSignature(clientEmail, impersonateEmail, scopes stri
 		Iat:   strconv.FormatInt(a.Start, 10),
 	}
 
-	// add impersonateEmail to the struct
 	if impersonateEmail != "" {
 		c.Sub = impersonateEmail
 	}
