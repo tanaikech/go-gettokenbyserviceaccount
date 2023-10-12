@@ -77,6 +77,6 @@ If you have any questions and commissions for me, feel free to tell me.
 
 - v1.0.1 (October 12, 2023)
 
-  1. Initial release.
+  1. Updated README.md and updated the script.
 
 [TOP](#top)
